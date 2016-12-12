@@ -42,6 +42,10 @@
 //!
 //! assert_eq!(my_array, [vec![0], vec![0, 1], vec![0, 1, 2]]);
 //! ```
+//!
+//! **Warning**: If the function given to `init_with` panics, any elements that have already been
+//! created will not run their destructor. This means that any elements with heap allocations -
+//! `Vec`, `Box`, etc - will leak their contents.
 
 extern crate nodrop;
 
