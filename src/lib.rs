@@ -46,10 +46,15 @@
 //! **Warning**: If the function given to `init_with` panics, any elements that have already been
 //! created will not run their destructor. This means that any elements with heap allocations -
 //! `Vec`, `Box`, etc - will leak their contents.
+//!
+//! This crate is built with `#![no_std]` and only uses libcore for its code, so it can be used
+//! from other `no_std` crates.
+
+#![no_std]
 
 extern crate nodrop;
 
-use std::{mem, ptr};
+use core::{mem, ptr};
 
 use nodrop::NoDrop;
 
