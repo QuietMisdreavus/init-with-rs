@@ -1,0 +1,7 @@
+[package]
+name = "init_with"
+version = "0.1.0"
+authors = ["QuietMisdreavus <bryan@icesoldier.me>"]
+
+[dependencies]
+nodrop = "0.1.8"
