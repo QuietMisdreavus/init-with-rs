@@ -61,21 +61,32 @@ pub trait InitWith<T> {
               Self: Sized;
 }
 
-impl<T> InitWith<T> for [T; 3] {
-    fn init_with<F>(mut init: F) -> Self
-        where F: FnMut() -> T
-    {
-        let mut ret: NoDrop<[T; 3]> = unsafe { NoDrop::new(mem::uninitialized()) };
+macro_rules! array_init {
+    ($($N:expr),+) => {
+        $(
+            impl<T> InitWith<T> for [T; $N] {
+                fn init_with<F>(mut init: F) -> Self
+                    where F: FnMut() -> T
+                {
+                    let mut ret: NoDrop<[T; $N]> = unsafe { NoDrop::new(mem::uninitialized()) };
 
-        for i in 0..3 {
-            unsafe {
-                ptr::write(&mut ret[i], init());
+                    for i in 0..$N {
+                        unsafe {
+                            ptr::write(&mut ret[i], init());
+                        }
+                    }
+
+                    ret.into_inner()
+                }
             }
-        }
-
-        ret.into_inner()
-    }
+        )+
+    };
 }
+
+array_init!(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+            21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+            31, 32);
 
 #[cfg(test)]
 mod tests {
