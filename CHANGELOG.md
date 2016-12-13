@@ -1,6 +1,6 @@
 # Changelog for init\_with
 
-## Pending
+## [0.1.1] - 2016-12-13
 ### Changed
 - Use pointer-offset calls instead of bounds-checked indexing when filling the array
 
