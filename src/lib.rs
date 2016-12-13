@@ -58,9 +58,32 @@ use core::{mem, ptr};
 
 use nodrop::NoDrop;
 
-/// A trait that allows you to create an instance of a type with a given function.
+/// A trait that allows you to create an instance of a type by using a given function to generate
+/// each element.
 pub trait InitWith<T> {
     /// Create a new instance of this type using the given function to fill elements.
+    ///
+    /// # Examples
+    ///
+    /// Prefilling an array with a Vec, with no unsafe code\*:
+    ///
+    /// ```rust
+    /// use init_with::InitWith;
+    ///
+    /// let src = vec![1, 2, 3];
+    /// let dest: [i32; 3] = {
+    ///     let mut idx = 0;
+    ///
+    ///     //*okay, there's unsafe code in here, but you didn't have to write it
+    ///     <[i32; 3]>::init_with(|| {
+    ///         let val = src[idx];
+    ///         idx += 1;
+    ///         val
+    ///     })
+    /// };
+    ///
+    /// assert_eq!(src, dest);
+    /// ```
     fn init_with<F>(init: F) -> Self
         where F: FnMut() -> T,
               Self: Sized;
