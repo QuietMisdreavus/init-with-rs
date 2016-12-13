@@ -74,10 +74,11 @@ macro_rules! array_init {
                     where F: FnMut() -> T
                 {
                     let mut ret: NoDrop<[T; $N]> = unsafe { NoDrop::new(mem::uninitialized()) };
+                    let base = ret.as_mut_ptr();
 
                     for i in 0..$N {
                         unsafe {
-                            ptr::write(&mut ret[i], init());
+                            ptr::write(base.offset(i), init());
                         }
                     }
 
