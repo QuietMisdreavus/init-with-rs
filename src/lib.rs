@@ -55,7 +55,7 @@ pub trait InitWith<T> {
     ///
     /// # Examples
     ///
-    /// Prefilling an array with a Vec, with no unsafe code\*:
+    /// Prefilling an array with a Vec, with no unsafe code:
     ///
     /// ```rust
     /// use init_with::InitWith;
@@ -64,7 +64,6 @@ pub trait InitWith<T> {
     /// let dest: [i32; 3] = {
     ///     let mut idx = 0;
     ///
-    ///     //*okay, there's unsafe code in here, but you didn't have to write it
     ///     <[i32; 3]>::init_with(|| {
     ///         let val = src[idx];
     ///         idx += 1;
