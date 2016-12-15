@@ -43,20 +43,10 @@
 //! assert_eq!(my_array, [vec![0], vec![0, 1], vec![0, 1, 2]]);
 //! ```
 //!
-//! **Warning**: If the function given to `init_with` panics, any elements that have already been
-//! created will not run their destructor. This means that any elements with heap allocations -
-//! `Vec`, `Box`, etc - will leak their contents.
-//!
 //! This crate is built with `#![no_std]` and only uses libcore for its code, so it can be used
 //! from other `no_std` crates.
 
 #![no_std]
-
-extern crate nodrop;
-
-use core::{mem, ptr};
-
-use nodrop::NoDrop;
 
 /// A trait that allows you to create an instance of a type by using a given function to generate
 /// each element.
@@ -90,32 +80,38 @@ pub trait InitWith<T> {
 }
 
 macro_rules! array_init {
-    ($($N:expr),+) => {
-        $(
-            impl<T> InitWith<T> for [T; $N] {
-                fn init_with<F>(mut init: F) -> Self
-                    where F: FnMut() -> T
-                {
-                    let mut ret: NoDrop<[T; $N]> = unsafe { NoDrop::new(mem::uninitialized()) };
-                    let base = ret.as_mut_ptr();
-
-                    for i in 0..$N {
-                        unsafe {
-                            ptr::write(base.offset(i), init());
-                        }
-                    }
-
-                    ret.into_inner()
-                }
+    {$n:expr, $init:ident, $($stack:ident,)+} => {
+        impl<T> InitWith<T> for [T; $n] {
+            fn init_with<F>(mut $init: F) -> Self
+                where F: FnMut() -> T
+            {
+                [$init(), $($stack()),+]
             }
-        )+
+        }
+        array_init!{($n - 1), $($stack,)+}
+    };
+    {$n:expr, $init:ident,} => {
+        impl<T> InitWith<T> for [T; $n] {
+            fn init_with<F>(mut $init: F) -> Self
+                where F: FnMut() -> T
+            {
+                [$init()]
+            }
+        }
+        array_init!{($n - 1)}
+    };
+    {$n:expr} => {
+        impl<T> InitWith<T> for [T; $n] {
+            fn init_with<F>(_init: F) -> Self
+                where F: FnMut() -> T
+            {
+                []
+            }
+        }
     };
 }
 
-array_init!(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-            11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-            21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-            31, 32);
+array_init!{32, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init,}
 
 #[cfg(test)]
 mod tests {

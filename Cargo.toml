@@ -8,6 +8,3 @@ repository = "https://github.com/QuietMisdreavus/init-with-rs"
 keywords = ["no_std"]
 license = "Unlicense"
 readme = "README.md"
-
-[dependencies]
-nodrop = { version = "0.1.8", default-features = false }

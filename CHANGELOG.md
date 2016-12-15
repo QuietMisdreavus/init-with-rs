@@ -1,5 +1,11 @@
 # Changelog for init\_with
 
+## Pending
+### Changed
+- Use macro-expanded array literals instead of `mem::uninitialized` and `ptr::write`
+  - This lets previously-initialized items properly Drop if a later init call panics
+  - This also lets us get rid of the `nodrop` dependency
+
 ## [0.1.1] - 2016-12-13
 ### Changed
 - Use pointer-offset calls instead of bounds-checked indexing when filling the array
