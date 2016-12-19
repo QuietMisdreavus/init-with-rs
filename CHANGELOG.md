@@ -1,10 +1,10 @@
 # Changelog for init\_with
 
-## Pending
+## [0.1.2] - 2016-12-19
 ### Changed
 - Use macro-expanded array literals instead of `mem::uninitialized` and `ptr::write`
   - This lets previously-initialized items properly Drop if a later init call panics
-  - This also lets us get rid of the `nodrop` dependency
+  - This also lets us get rid of the `nodrop` dependency, and of unsafe code in general
 
 ## [0.1.1] - 2016-12-13
 ### Changed
