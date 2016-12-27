@@ -31,7 +31,7 @@ To import this crate, put the following into your Cargo.toml:
 
 ```toml
 [dependencies]
-init_with = "0.1.2"
+init_with = "1.0.0"
 ```
 
 ...and the following in your crate root:
