@@ -1,5 +1,9 @@
 # Changelog for init\_with
 
+## [1.0.1] = 2017-01-20
+
+This version is identical to 1.0.0, with some metadata updates to add a category for the crate,
+
 ## [1.0.0] - 2016-12-27
 
 This version is identical to 0.1.2, but I'm updating the major version because I think the API is
