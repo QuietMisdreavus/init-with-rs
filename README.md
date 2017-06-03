@@ -2,7 +2,7 @@
 
 [Documentation][]
 
-[Documentation]: https://shiva.icesoldier.me/init_with/init_with/
+[Documentation]: https://docs.rs/init_with
 
 Have you wanted to be able to initialize a fixed array in Rust by calling a function to create each
 element? Now you can!
@@ -31,7 +31,7 @@ To import this crate, put the following into your Cargo.toml:
 
 ```toml
 [dependencies]
-init_with = "1.0.1"
+init_with = "1.0.2"
 ```
 
 ...and the following in your crate root:

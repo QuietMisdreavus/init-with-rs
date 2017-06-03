@@ -1,5 +1,9 @@
 # Changelog for init\_with
 
+## [1.0.2] - 2017-06-02
+
+This version is identical to 1.0.1, just updating the documentation link to docs.rs.
+
 ## [1.0.1] = 2017-01-20
 
 This version is identical to 1.0.0, with some metadata updates to add a category for the crate,
