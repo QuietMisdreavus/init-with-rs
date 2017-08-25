@@ -43,6 +43,16 @@
 //! assert_eq!(my_array, [vec![0], vec![0, 1], vec![0, 1, 2]]);
 //! ```
 //!
+//! Alternatively, `init_with_indices` can be used to more easily create array entries based on their index:
+//!
+//! ```rust
+//! use init_with::InitWith;
+//!
+//! let squares = <[usize; 5]>::init_with_indices(|i| i*i);
+//!
+//! assert_eq!(squares, [0,1,4,9,16]);
+//! ```
+//!
 //! This crate is built with `#![no_std]` and only uses libcore for its code, so it can be used
 //! from other `no_std` crates.
 
@@ -74,17 +84,45 @@ pub trait InitWith<T> {
     /// assert_eq!(src, dest);
     /// ```
     fn init_with<F>(init: F) -> Self
-        where F: FnMut() -> T,
-              Self: Sized;
+    where
+        F: FnMut() -> T,
+        Self: Sized;
+
+    /// Create a new instance of this type to fill elements
+    /// by mapping the given function over the new array's indices.
+    ///
+    /// # Examples
+    ///
+    /// Prefilling an array of eeven numbers, with no unsafe code
+    ///
+    /// ```rust
+    /// use init_with::InitWith;
+    ///
+    /// let src = vec![0, 2, 4];
+    /// let dest = <[i32; 3]>::init_with_indices(|x| 2*x as i32);
+    ///
+    ///
+    /// assert_eq!(src, dest);
+    /// ```
+    fn init_with_indices<F>(init: F) -> Self
+    where
+        F: FnMut(usize) -> T,
+        Self: Sized;
 }
 
 macro_rules! array_init {
     {$n:expr, $init:ident, $($stack:ident,)+} => {
         impl<T> InitWith<T> for [T; $n] {
             fn init_with<F>(mut $init: F) -> Self
-                where F: FnMut() -> T
+                where F: FnMut() -> T,
+                Self: Sized
             {
                 [$init(), $($stack()),+]
+            }
+            fn init_with_indices<F>(mut $init: F) -> Self
+                where F: FnMut(usize) -> T
+            {
+                build_incrementing_list!([], 0, $init, $($stack),+)
             }
         }
         array_init!{($n - 1), $($stack,)+}
@@ -92,9 +130,16 @@ macro_rules! array_init {
     {$n:expr, $init:ident,} => {
         impl<T> InitWith<T> for [T; $n] {
             fn init_with<F>(mut $init: F) -> Self
-                where F: FnMut() -> T
+                where F: FnMut() -> T,
+                Self: Sized
             {
                 [$init()]
+            }
+            fn init_with_indices<F>(mut $init: F) -> Self
+                where F: FnMut(usize) -> T,
+                Self: Sized
+            {
+                [$init(0)]
             }
         }
         array_init!{($n - 1)}
@@ -102,12 +147,28 @@ macro_rules! array_init {
     {$n:expr} => {
         impl<T> InitWith<T> for [T; $n] {
             fn init_with<F>(_init: F) -> Self
-                where F: FnMut() -> T
+                where F: FnMut() -> T,
+                Self: Sized
+            {
+                []
+            }
+            fn init_with_indices<F>(_: F) -> Self
+                where F: FnMut(usize) -> T,
+                Self: Sized
             {
                 []
             }
         }
     };
+}
+
+macro_rules! build_incrementing_list {
+	{[$($result:tt)*], $n:expr, $head:ident} => { 
+		[$($result)* $head($n),]
+	};
+	{[$($result:tt)*], $n:expr, $head:ident, $($stack:ident),+} => { 
+		build_incrementing_list!([$($result)* $head($n),], $n+1, $($stack),+)
+	};
 }
 
 array_init!{32, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init, init,}
@@ -120,5 +181,11 @@ mod tests {
     fn expected() {
         let val = <[i32; 3]>::init_with(|| 4);
         assert_eq!(val, [4, 4, 4]);
+    }
+
+    #[test]
+    fn expected_build_incrementing_list() {
+        let val = <[usize; 5]>::init_with_indices(|x| x);
+        assert_eq!(val, [0, 1, 2, 3, 4]);
     }
 }
