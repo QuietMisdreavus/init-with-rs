@@ -93,7 +93,7 @@ pub trait InitWith<T> {
     ///
     /// # Examples
     ///
-    /// Prefilling an array of eeven numbers, with no unsafe code
+    /// Prefilling an array of even numbers, with no unsafe code:
     ///
     /// ```rust
     /// use init_with::InitWith;
