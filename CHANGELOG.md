@@ -1,5 +1,9 @@
 # Changelog for init\_with
 
+## [1.1.0] - 2917-08-25
+### Added
+- `InitWith::init_with_indices`, to hand an index to your init function
+
 ## [1.0.2] - 2017-06-02
 
 This version is identical to 1.0.1, just updating the documentation link to docs.rs.

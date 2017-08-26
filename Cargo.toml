@@ -1,6 +1,6 @@
 [package]
 name = "init_with"
-version = "1.0.2"
+version = "1.1.0"
 authors = ["QuietMisdreavus <grey@quietmisdreavus.net>"]
 description = "Helper trait to initilize an array with a function"
 documentation = "https://docs.rs/init_with"

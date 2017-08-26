@@ -24,6 +24,16 @@ let my_array = {
 assert_eq!(my_array, [vec![0], vec![0, 1], vec![0, 1, 2]]);
 ```
 
+Alternatively, `init_with_indices` can be used to more easily create array entries based on their index:
+
+```rust
+use init_with::InitWith;
+
+let squares = <[usize; 5]>::init_with_indices(|i| i*i);
+
+assert_eq!(squares, [0,1,4,9,16]);
+```
+
 This crate lets you initialize the array elements in a functional manner while hiding the unsafe
 code that's needed to do so.
 
@@ -31,7 +41,7 @@ To import this crate, put the following into your Cargo.toml:
 
 ```toml
 [dependencies]
-init_with = "1.0.2"
+init_with = "1.1.0"
 ```
 
 ...and the following in your crate root:
